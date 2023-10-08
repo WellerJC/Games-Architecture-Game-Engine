@@ -1,0 +1,60 @@
+﻿using System;
+using OpenTK;
+using OpenTK.Graphics.OpenGL;
+using System.Drawing;
+using OpenTK.Input;
+using OpenGL_Game.Managers;
+
+namespace OpenGL_Game.Scenes
+{
+    class GameOverScene : Scene
+    {
+        bool keybinds;
+        public GameOverScene(SceneManager sceneManager) : base(sceneManager)
+        {
+            // Set the title of the window
+            sceneManager.Title = "Game Over";
+            // Set the Render and Update delegates to the Update and Render methods of this class
+            sceneManager.renderer = Render;
+            sceneManager.updater = Update;
+            sceneManager.keyboardDownDelegate += Keyboard_KeyDown;
+            keybinds = false;
+        }
+
+        public override void Update(FrameEventArgs e)
+        {
+        }
+
+        public override void Render(FrameEventArgs e)
+        {
+            GL.Viewport(0, 0, sceneManager.Width, sceneManager.Height);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
+            GL.Ortho(0, sceneManager.Width, 0, sceneManager.Height, -1, 1);
+
+            GUI.clearColour = Color.Firebrick;
+
+            //Display the Title
+            float width = sceneManager.Width, height = sceneManager.Height, fontSize = Math.Min(width, height) / 10f;
+            GUI.Label(new Rectangle(0, (int)(fontSize / 2f), (int)width, (int)(fontSize * 2f)), "GAME OVER!", (int)fontSize, StringAlignment.Center);
+            GUI.Label(new Rectangle(0, 200, (int)width, (int)(fontSize * 2f)), "YOU WERE DEFEATED", (int)fontSize, StringAlignment.Center);
+            GUI.Label(new Rectangle(0, 400, (int)width, (int)(fontSize * 2f)), "(PRESS ANY BUTTON TO RETURN TO THE MAIN MENU)", 10, StringAlignment.Center);
+            GUI.Render();
+        }
+
+        public void Keyboard_KeyDown(KeyboardKeyEventArgs e)
+
+        {
+            
+        }
+
+        public override void Close()
+        {
+            sceneManager.Close();
+            keybinds = true;
+            sceneManager.keyboardDownDelegate -= Keyboard_KeyDown;
+        }
+    }
+}
